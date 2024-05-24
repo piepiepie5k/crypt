@@ -175,8 +175,26 @@ def key_gen(block_1, block_2):
         li.append(permute(block_1 + block_2, PERMUTED_CHOICE_2))
  
     return li
+
+
+def read_text_from_file(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден.")
+        return ""
+    except IOError:
+        print(f"Ошибка при чтении файла {filename}.")
+        return ""
  
- 
+
+def wrire_file(filename,text):
+    # Открываем файл для записи
+    with open(filename, 'w') as file:
+            file.write(text)
+
+
 def f(block, key):
     final = []
  
@@ -204,7 +222,7 @@ def des(block, key_array):
  
  
 def main(mess, mod):
- 
+    mess=read_text_from_file(mess)
     if mod == 0:
         encrypted_list = []
         for i in slice_mess(mess):
@@ -221,6 +239,7 @@ def main(mess, mod):
                 2).upper() for i in des(permuted_block, key_list)]))
  
         print(''.join(encrypted_list))
+        wrire_file('output.txt',''.join(encrypted_list))
  
     elif mod == 1:
         temp_li = []
@@ -240,9 +259,11 @@ def main(mess, mod):
  
         print(''.join(concatenate(
             [[chr(int(j, 16)) for j in wrap(i, 2) if int(j, 16) != 0] for i in temp_li])))
+        wrire_file('output.txt',''.join(concatenate(
+            [[chr(int(j, 16)) for j in wrap(i, 2) if int(j, 16) != 0] for i in temp_li])))
+        
  
  
 if __name__ == '__main__':
     while True:
-        main(input('Input sentence: '), int(
-            input('Choose mod (0 - encrypt, 1 - decrypt): ')))
+        main(input('Input sentence: '), int(input('Choose mod (0 - encrypt, 1 - decrypt): ')))
